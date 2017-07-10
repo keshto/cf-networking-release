@@ -13,13 +13,11 @@
   etcd_servers = discover_etcd_server
 %>
 
-<%
-cidr = p("cf_networking.network") 
-mod_cidr = cidr.gsub('/', '-')
-%>
+rm -rf /tmp/ipset
+mkdir /tmp/ipset
+cd /tmp/ipset
 
-curl -L -X PUT http://<%= etcd_servers %>/v2/keys/calico/v1/ipam/v4/pool/<%= mod_cidr %> -d value='{ "cidr": "<%= cidr %>"}'
+tar -zxvf /var/vcap/packages/ipset/src/ipset.tar.gz
+sudo dpkg -i *.deb
 
-<% unless p("cf_networking.disable") %>
-rm -rf /var/vcap/data/container-metadata
-<% end %>
+curl -L -X PUT http://<%= etcd_servers %>/v2/keys/calico/v1/Ready  -d value="true"

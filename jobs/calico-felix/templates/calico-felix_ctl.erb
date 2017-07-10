@@ -3,12 +3,16 @@
 <% unless p("cf_networking.disable") %>
 source /var/vcap/packages/ctl-utils/ctl_util.sh
 
+RUN_DIR=/var/vcap/sys/run/calico-felix
+LOG_DIR=/var/vcap/sys/log/calico-felix
+
 export PIDFILE="${RUN_DIR}"/calico-felix.pid
 
 mkdir -p "${RUN_DIR}"
 mkdir -p "${LOG_DIR}"
 
 export PATH="${PATH}:/var/vcap/packages/calico-daemons/bin"
+export FELIX_IPV6SUPPORT=false #make this a parameter
 
 exec 1>> "${LOG_DIR}"/calico-felix_ctl.out.log
 exec 2>> "${LOG_DIR}"/calico-felix_ctl.err.log
@@ -18,17 +22,16 @@ case $1 in
   start)
     trap 'handle_orphaned_server calico-felix ${pid}' TERM
 
-    stop_process_on_port "${PORT}"
+    killall felix | true
 
-    calico-felix \
+    felix \
          -c /var/vcap/jobs/calico-felix/conf/calico-felix.cfg \
          2> >(tee -a "${LOG_DIR}"/calico-felix.stderr.log | logger -p user.error -t calico-felix) \
          1> >(tee -a "${LOG_DIR}"/calico-felix.stdout.log | logger -t calico-felix) &
 
     pid=$!
 
-    healthy=$(wait_for_server_to_become_healthy "${URL}" "${TIMEOUT}")
-    write_pid "${healthy}" "${pid}"
+    echo "${pid}" > "${PIDFILE}"
 
     ;;
 

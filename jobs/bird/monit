@@ -4,6 +4,4 @@ check process bird
   start program "/var/vcap/jobs/bird/bin/bird_ctl start"
   stop program "/var/vcap/jobs/bird/bin/bird_ctl stop"
   group vcap
-  if failed
-     then restart
 <% end %>

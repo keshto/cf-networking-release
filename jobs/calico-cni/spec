@@ -17,3 +17,27 @@ properties:
   cf_networking.mtu:
     description: "Pre-encapsulation MTU for containers.  If set, the network interface inside the container will have an MTU that should account for additional network encapsulations, e.g. IPSec."
     default: 0
+
+  cf_networking.iptables_logging:
+    description: "Enables iptables logging for overlay network policies and Application Security Groups.  Logs to the kernel log."
+    default: false
+
+  cf_networking.dns_servers:
+    description: "DNS servers that containers will use.  If set, this list takes precedence over DNS servers configured through garden."
+    default: []
+
+  cf_networking.rate:
+    description: "Bandwidth rate in Kbps for traffic through container. 0 for no limit. If rate is set, burst must also be set."
+    default: 0
+
+  cf_networking.burst:
+    description: "Bandwidth burst in Kb for traffic through container. 0 for no limit. If burst is set, rate must also be set."
+    default: 0
+
+  cf_networking.iptables_denied_logs_per_sec:
+    description: "Maximum number of iptables logs per second for denied packets."
+    default: 1
+      
+  cf_networking.network:
+    description: "CIDR address block for overlay network.  Subnets for each diego cell are allocated out of this network."
+    default: "10.255.0.0/16"

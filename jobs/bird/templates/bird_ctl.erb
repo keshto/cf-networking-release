@@ -3,6 +3,9 @@
 <% unless p("cf_networking.disable") %>
 source /var/vcap/packages/ctl-utils/ctl_util.sh
 
+RUN_DIR=/var/vcap/sys/run/bird
+LOG_DIR=/var/vcap/sys/log/bird
+
 export PIDFILE="${RUN_DIR}"/bird.pid
 
 mkdir -p "${RUN_DIR}"
@@ -18,17 +21,20 @@ case $1 in
   start)
     trap 'handle_orphaned_server bird ${pid}' TERM
 
-    stop_process_on_port "${PORT}"
+    killall bird | true
+
+    rm -rf /var/vcap/jobs/bird/var
+    mkdir /var/vcap/jobs/bird/var
 
     bird \
          -c /var/vcap/jobs/bird/conf/bird.conf \
+         -s /var/vcap/jobs/bird/var/bird.ctl \
          2> >(tee -a "${LOG_DIR}"/bird.stderr.log | logger -p user.error -t bird) \
          1> >(tee -a "${LOG_DIR}"/bird.stdout.log | logger -t bird) &
 
-    pid=$!
+    pid=`ps aux| grep bird.conf | grep -v grep | awk '{print $2}'`
 
-    healthy=$(wait_for_server_to_become_healthy "${URL}" "${TIMEOUT}")
-    write_pid "${healthy}" "${pid}"
+    echo "${pid}" > "${PIDFILE}"
 
     ;;
 

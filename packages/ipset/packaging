@@ -1,0 +1,4 @@
+set -e
+
+mkdir ${BOSH_INSTALL_TARGET}/src
+cp ipset/ipset.tar.gz ${BOSH_INSTALL_TARGET}/src

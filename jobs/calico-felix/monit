@@ -4,6 +4,4 @@ check process calico-felix
   start program "/var/vcap/jobs/calico-felix/bin/calico-felix_ctl start"
   stop program "/var/vcap/jobs/calico-felix/bin/calico-felix_ctl stop"
   group vcap
-  if failed
-     then restart
 <% end %>
