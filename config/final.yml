@@ -1,10 +1,10 @@
 ---
-final_name: cf-networking
+final_name: cf-networking-calico
 blobstore:
   #provider: s3
   provider: local
   options:
-    blobstore_path: /tmp/cf-networking-blobs
+    blobstore_path: /tmp/cf-networking-calico-blobs
     #bucket_name: c2c-networking-blobs
     #region: us-west-2
     #endpoint: https://s3-us-west-2.amazonaws.com/
