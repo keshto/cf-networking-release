@@ -1,0 +1,7 @@
+set -e
+
+tar xzf bird/bird-1.6.3-1.tar.gz
+tar xzf calico/calico-felix-2.3.0.tar.gz
+mkdir ${BOSH_INSTALL_TARGET}/bin
+cp bird-bin/* ${BOSH_INSTALL_TARGET}/bin
+cp calico-felix ${BOSH_INSTALL_TARGET}/bin

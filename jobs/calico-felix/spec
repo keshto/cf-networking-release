@@ -1,0 +1,19 @@
+---
+name: calico-felix
+
+templates:
+  calico-felix.cfg.erb: conf/calico-felix.cfg
+  calico-felix_ctl.erb: bin/calico-felix_ctl
+
+consumes:
+- name: etcd
+  type: etcd_service
+  optional: true
+
+packages:
+  - calico-daemons
+
+properties:
+  cf_networking.disable:
+    description: "Disable container to container networking."
+    default: false

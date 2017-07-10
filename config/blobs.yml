@@ -1,3 +1,12 @@
+bird/bird-1.6.3-1.tar.gz:
+  size: 553711
+  sha: 26f867d7493881d5e26d414b79c0e45f8a5b960b
+calico-cni/calico-cni-1.9.tar.gz:
+  size: 15303380
+  sha: 92fea9bc0ec6f1791b47454715a7b37ec569a45e
+calico/calico-felix-2.3.0.tar.gz:
+  size: 11464383
+  sha: bd81c659162639628f6fa579ff8f161c881ef6dd
 cli/cf-cli_6.23.0_linux_x86-64.tgz:
   size: 6642870
   object_id: aa390aab-8946-47af-ac7d-3cdfe1e97a26
