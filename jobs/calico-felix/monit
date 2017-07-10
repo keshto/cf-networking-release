@@ -1,0 +1,9 @@
+<% unless p("cf_networking.disable") %>
+check process calico-felix
+  with pidfile /var/vcap/sys/run/calico-felix/calico-felix.pid
+  start program "/var/vcap/jobs/calico-felix/bin/calico-felix_ctl start"
+  stop program "/var/vcap/jobs/calico-felix/bin/calico-felix_ctl stop"
+  group vcap
+  if failed
+     then restart
+<% end %>

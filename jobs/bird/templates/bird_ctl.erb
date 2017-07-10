@@ -1,0 +1,47 @@
+#!/bin/bash -eu
+
+<% unless p("cf_networking.disable") %>
+source /var/vcap/packages/ctl-utils/ctl_util.sh
+
+export PIDFILE="${RUN_DIR}"/bird.pid
+
+mkdir -p "${RUN_DIR}"
+mkdir -p "${LOG_DIR}"
+
+export PATH="${PATH}:/var/vcap/packages/calico-daemons/bin"
+
+exec 1>> "${LOG_DIR}"/bird_ctl.out.log
+exec 2>> "${LOG_DIR}"/bird_ctl.err.log
+
+case $1 in
+
+  start)
+    trap 'handle_orphaned_server bird ${pid}' TERM
+
+    stop_process_on_port "${PORT}"
+
+    bird \
+         -c /var/vcap/jobs/bird/conf/bird.conf \
+         2> >(tee -a "${LOG_DIR}"/bird.stderr.log | logger -p user.error -t bird) \
+         1> >(tee -a "${LOG_DIR}"/bird.stdout.log | logger -t bird) &
+
+    pid=$!
+
+    healthy=$(wait_for_server_to_become_healthy "${URL}" "${TIMEOUT}")
+    write_pid "${healthy}" "${pid}"
+
+    ;;
+
+  stop)
+
+    stop_process
+
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop}"
+
+    ;;
+
+esac
+<% end %>

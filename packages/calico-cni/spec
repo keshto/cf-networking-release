@@ -1,0 +1,7 @@
+---
+name: calico-cni
+
+dependencies: []
+
+files: 
+- calico-cni/calico-cni-1.9.tar.gz
