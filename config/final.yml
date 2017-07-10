@@ -1,8 +1,6 @@
 ---
-final_name: cf-networking
+final_name: cf-networking-calico
 blobstore:
-  provider: s3
+  provider: local
   options:
-    bucket_name: c2c-networking-blobs
-    region: us-west-2
-    endpoint: https://s3-us-west-2.amazonaws.com/
+    blobstore_path: /tmp/cf-networking-calico-blobs
