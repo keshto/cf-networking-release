@@ -81,11 +81,11 @@
           client_cert: "((silk_daemon.certificate))"
           client_key: "((silk_daemon.private_key))"
 
-# add silk-cni job to the diego-cell instance group
+# add calico-cni job to the diego-cell instance group
 - type: replace
   path: /instance_groups/name=diego-cell/jobs/-
   value:
-    name: silk-cni
+    name: calico-cni
     release: cf-networking
 
 # add silk-controller job to the diego-bbs instance group

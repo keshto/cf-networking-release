@@ -1,0 +1,9 @@
+<% unless p("cf_networking.disable") %>
+check process bird
+  with pidfile /var/vcap/sys/run/bird/bird.pid
+  start program "/var/vcap/jobs/bird/bin/bird_ctl start"
+  stop program "/var/vcap/jobs/bird/bin/bird_ctl stop"
+  group vcap
+  if failed
+     then restart
+<% end %>

@@ -1,0 +1,5 @@
+#!/bin/bash -eu
+
+<% unless p("cf_networking.disable") %>
+rm -rf /var/vcap/data/container-metadata
+<% end %>

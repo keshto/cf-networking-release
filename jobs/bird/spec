@@ -1,0 +1,14 @@
+---
+name: bird
+
+templates:
+  bird.conf.erb: conf/bird.conf
+  bird_ctl.erb: bin/bird_ctl
+
+packages:
+- calico-daemons
+
+properties:
+  cf_networking.disable:
+    description: "Disable container to container networking."
+    default: false
