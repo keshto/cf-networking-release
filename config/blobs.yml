@@ -1,15 +1,15 @@
 bird/bird-1.6.3-1.tar.gz:
-  size: 524
-  object_id: a57625e1-230f-4fb6-5a0f-00fe636e9083
-  sha: 01608af0e7b03c1002d328776a00e4a768771e8f
+  size: 2687498
+  object_id: 11f8379a-9559-41f3-779d-c08c2bac5332
+  sha: 592d86d1dacd01a247a7b07fb40832130ba104e1
 calico-cni/calico-cni-1.9.tar.gz:
-  size: 720
-  object_id: 85049fbc-84be-4393-6c97-fb41d9cd04b6
-  sha: 40d8d8687f80692eff8b7e4ef6d56842a1c3cfeb
+  size: 16509397
+  object_id: 31198716-c7d1-4b1d-66ee-a1f4464d96d3
+  sha: 6c16c35bc8ad8421713e0351b23345e5b82549a4
 calico/calico-felix-2.3.0.tar.gz:
-  size: 529
-  object_id: 883441ce-ef82-46e0-442c-070827be8306
-  sha: 3d7a7441a34b00dc656ded5902166a7029dbdd41
+  size: 11464466
+  object_id: e0c9aa67-8696-4665-772e-fb65b5b69088
+  sha: 0a43dceb3fa66eb73db097ccb6d58fe32d480fa5
 cli/cf-cli_6.23.0_linux_x86-64.tgz:
   size: 6642870
   object_id: aa390aab-8946-47af-ac7d-3cdfe1e97a26
@@ -18,3 +18,7 @@ golang/go1.8.1.linux-amd64.tar.gz:
   size: 91277742
   object_id: 61751c61-e43c-467e-6736-48c710f49b79
   sha: a433f76c569055ff8536d796995518dd91a9fa5b
+ipset/ipset.tar.gz:
+  size: 96399
+  object_id: c53aa351-4ba3-45af-7e90-80bbda7c8520
+  sha: b0200441c795536e4ee1e64f37e9b15d0c4c7b83

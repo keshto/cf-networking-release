@@ -1,0 +1,23 @@
+#!/bin/bash -eu
+
+<%
+  def discover_etcd_server
+    etcd_servers_addr = " "
+    if_link("etcd") do |etcd_servers|
+       etcd_servers.instances.map do |instance|
+         etcd_servers_addr = instance.address + ":4001 "
+       end
+    end
+    etcd_servers_addr.strip!.gsub(' ', ',')
+  end
+  etcd_servers = discover_etcd_server
+%>
+
+rm -rf /tmp/ipset
+mkdir /tmp/ipset
+cd /tmp/ipset
+
+tar -zxvf /var/vcap/packages/ipset/src/ipset.tar.gz
+sudo dpkg -i *.deb
+
+curl -L -X PUT http://<%= etcd_servers %>/v2/keys/calico/v1/Ready  -d value="true"
