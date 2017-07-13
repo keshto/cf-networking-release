@@ -4,7 +4,7 @@
     etcd_servers_addr = " "
     if_link("etcd") do |etcd_servers|
        etcd_servers.instances.map do |instance|
-         etcd_servers_addr = etcd_servers_addr + "http://" instance.address + ":4001 "
+         etcd_servers_addr = etcd_servers_addr + "http://" + instance.address + ":4001 "
        end
     end
     etcd_servers_addr.strip!.gsub(' ', ',')
@@ -13,4 +13,4 @@
 %>
 
 #FelixHostname = hostname
-EtcdEndpoints = <%= etcd_servers_addr %>
+EtcdEndpoints = <%= etcd_servers %>

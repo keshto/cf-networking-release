@@ -4,6 +4,7 @@ name: calico-felix
 templates:
   calico-felix.cfg.erb: conf/calico-felix.cfg
   calico-felix_ctl.erb: bin/calico-felix_ctl
+  pre-start.erb: bin/pre-start
 
 consumes:
 - name: etcd
@@ -12,6 +13,7 @@ consumes:
 
 packages:
   - calico-daemons
+  - ipset
 
 properties:
   cf_networking.disable:

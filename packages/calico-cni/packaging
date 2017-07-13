@@ -2,4 +2,5 @@ set -e
 
 tar xzf calico-cni/calico-cni-1.9.tar.gz
 mkdir ${BOSH_INSTALL_TARGET}/bin
-cp calico* ${BOSH_INSTALL_TARGET}/bin
+chmod +x calico calico-ipam portmap
+cp calico calico-ipam portmap ${BOSH_INSTALL_TARGET}/bin
