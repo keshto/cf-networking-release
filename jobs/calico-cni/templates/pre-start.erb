@@ -1,5 +1,25 @@
 #!/bin/bash -eu
 
+<%
+  def discover_etcd_server
+    etcd_servers_addr = " "
+    if_link("etcd") do |etcd_servers|
+       etcd_servers.instances.map do |instance|
+         etcd_servers_addr = instance.address + ":4001 "
+       end
+    end
+    etcd_servers_addr.strip!.gsub(' ', ',')
+  end
+  etcd_servers = discover_etcd_server
+%>
+
+<%
+cidr = p("cf_networking.network") 
+mod_cidr = cidr.gsub('/', '-')
+%>
+
+curl -L -X PUT http://<%= etcd_servers %>/v2/keys/calico/v1/ipam/v4/pool/<%= mod_cidr %> -d value='{ "cidr": "<%= cidr %>"}'
+
 <% unless p("cf_networking.disable") %>
 rm -rf /var/vcap/data/container-metadata
 <% end %>

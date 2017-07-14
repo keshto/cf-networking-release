@@ -4,8 +4,8 @@ name: calico-cni
 dependencies:
   - golang
 
-files: 
-	- calico-cni/calico-cni-1.9.tar.gz
+files:
+  - calico-cni/calico-cni-1.9.tar.gz
   - cni-wrapper-plugin/*.go # gosub
   - cni-wrapper-plugin/adapter/*.go # gosub
   - cni-wrapper-plugin/discover/*.go # gosub

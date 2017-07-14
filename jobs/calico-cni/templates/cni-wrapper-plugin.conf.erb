@@ -1,3 +1,15 @@
+<%
+  def discover_etcd_server
+    etcd_servers_addr = " "
+    if_link("etcd") do |etcd_servers|
+       etcd_servers.instances.map do |instance|
+         etcd_servers_addr = etcd_servers_addr + "http://" + instance.address + ":4001 "
+       end
+    end
+    etcd_servers_addr.strip!.gsub(' ', ',')
+  end
+  etcd_servers = discover_etcd_server
+%>
 <% unless p("cf_networking.disable") %>
 <%=
   require 'json'
@@ -20,12 +32,24 @@
     "cniVersion" => "0.3.1",
     "datastore" => "/var/vcap/data/container-metadata/store.json",
     "iptables_lock_file" => "/var/vcap/data/garden-cni/iptables.lock",
+    "health_check_url" => "http://127.0.0.1:8500", #fixme
+    "instance_address" => spec.ip,
+    "iptables_asg_logging" => p("cf_networking.iptables_logging"),
+    "iptables_c2c_logging" => p("cf_networking.iptables_logging"),
+    "iptables_denied_logs_per_sec" => p("cf_networking.iptables_denied_logs_per_sec"),
+    "ingress_tag" => "ffff0000",
+    "vtep_name" => "silk-vtep",
+    "dns_servers" => p("cf_networking.dns_servers"),
     "delegate" => {
       "cniVersion" => "0.3.1",
+      "etcd_endpoints" => etcd_servers,
+      "log_level" => "DEBUG",
       "name" => "calico",
       "type" => "calico",
-      "ipam"=> {
-        "type"=> "calico-ipam"
+      "ipam" => {
+        "type" => "calico-ipam",
+        "assign_ipv4" => "true",
+        "ipv4_pools" => [p("cf_networking.network")]
       }  
      }
   }
