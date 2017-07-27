@@ -43,6 +43,37 @@ func cmdAdd(args *skel.CmdArgs) error {
 		return err
 	}
 
+	var cniAddData struct {
+		Metadata map[string]interface{}
+	}
+	if err := json.Unmarshal(args.StdinData, &cniAddData); err != nil {
+		panic(err) // not tested, this should be impossible
+	}
+
+	appLabel := "calico"
+
+	if cniAddData.Metadata["app_id"] != nil {
+		appLabel = cniAddData.Metadata["app_id"].(string)
+	} else {
+		fmt.Errorf("No app_id from metadata using default 'calico'")
+	}
+
+  // Modify delegate field to use app_id from metadata field for labels
+  byt := []byte(fmt.Sprintf(`{"org.apache.mesos": {
+                                "network_info": {
+                                  "name": "calico", 
+                                  "labels": {
+                                    "labels": [{
+                                      "key": "app_guid", 
+                                      "value": "%s"
+                                    }]}}}}`, 
+                              appLabel))
+  var delegateArgs map[string]interface{}
+  if err := json.Unmarshal(byt, &delegateArgs); err != nil {
+    panic(err) // not tested, this should be impossible
+   }
+  n.Delegate["args"] = delegateArgs
+
 	result, err := pluginController.DelegateAdd(n.Delegate)
 	if err != nil {
 		return fmt.Errorf("delegate call: %s", err)
@@ -59,13 +90,6 @@ func cmdAdd(args *skel.CmdArgs) error {
 	store := &datastore.Store{
 		Serializer: &serial.Serial{},
 		Locker:     filelock.NewLocker(n.Datastore),
-	}
-
-	var cniAddData struct {
-		Metadata map[string]interface{}
-	}
-	if err := json.Unmarshal(args.StdinData, &cniAddData); err != nil {
-		panic(err) // not tested, this should be impossible
 	}
 
 	if err := store.Add(args.ContainerID, containerIP.String(), cniAddData.Metadata); err != nil {
