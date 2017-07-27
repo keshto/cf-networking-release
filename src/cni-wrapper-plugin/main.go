@@ -43,6 +43,38 @@ func cmdAdd(args *skel.CmdArgs) error {
 		return err
 	}
 
+	var cniAddData struct {
+		Metadata map[string]interface{}
+	}
+	if err := json.Unmarshal(args.StdinData, &cniAddData); err != nil {
+		panic(err) // not tested, this should be impossible
+	}
+
+	app_id   := cniAddData.Metadata["app_id"]
+	org_id   := cniAddData.Metadata["org_id"]
+	space_id := cniAddData.Metadata["space_id"]
+	policy_group_id := cniAddData.Metadata["policy_group_id"]
+	
+	cfAppLabel := map[string]string{"key": "app_id", "value": app_id}
+    cfOrgLabel := map[string]string{"key": "org_id", "value": org_id}
+    cfSpaceLabel := map[string]string{"key": "space_id", "value": space_id}
+    cfPolicyGroupLabel := map[string]string{"key": "policy_group_id", "value": policy_group_id}
+    
+    cfLabels := make(map[string]interface{})
+	cfLabels["labels"] = []interface{} { cfAppLabel, cfOrgLabel, cfSpaceLabel, cfPolicyGroupLabel }
+    
+    networkInfo := map[string]interface{} { "name": app_id, "labels" : cfLabels}
+	networkInfoMap := map[string]interface{} { "network_info":networkInfo}
+    
+    // FIX ME
+    TEMP_PLACE_HOLDER := "org.apache.mesos"
+    argsMetadata := map[string]interface{}{ TEMP_PLACE_HOLDER: networkInfoMap }
+    fmt.Printf("ArgsMetadata is : %+v\n", ArgsMetadata)
+
+	jsonString, _ := json.Marshal(argsMetadata)
+	fmt.Println("Passed Args Metadata: %s", string(jsonString))
+		
+	n.Delegate["args"] = argsMetadata
 	result, err := pluginController.DelegateAdd(n.Delegate)
 	if err != nil {
 		return fmt.Errorf("delegate call: %s", err)
@@ -59,13 +91,6 @@ func cmdAdd(args *skel.CmdArgs) error {
 	store := &datastore.Store{
 		Serializer: &serial.Serial{},
 		Locker:     filelock.NewLocker(n.Datastore),
-	}
-
-	var cniAddData struct {
-		Metadata map[string]interface{}
-	}
-	if err := json.Unmarshal(args.StdinData, &cniAddData); err != nil {
-		panic(err) // not tested, this should be impossible
 	}
 
 	if err := store.Add(args.ContainerID, containerIP.String(), cniAddData.Metadata); err != nil {

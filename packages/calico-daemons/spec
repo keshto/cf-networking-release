@@ -6,3 +6,4 @@ dependencies: []
 files: 
 - bird/bird-1.6.3-1.tar.gz
 - calico/calico-felix-2.3.0.tar.gz
+- confd/confd-0.11.0.tar.gz

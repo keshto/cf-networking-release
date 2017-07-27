@@ -1,0 +1,7 @@
+<% unless p("cf_networking.disable") %>
+check process confd
+  with pidfile /var/vcap/sys/run/confd/confd.pid
+  start program "/var/vcap/jobs/confd/bin/confd_ctl start"
+  stop program "/var/vcap/jobs/confd/bin/confd_ctl stop"
+  group vcap
+<% end %>

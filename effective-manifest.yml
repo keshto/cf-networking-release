@@ -1311,7 +1311,7 @@ instance_groups:
             - scim.read
             - scim.write
             name: admin
-            password: qpfcoea23rx2stbylorm
+            password: qpfcoea23rx2stbylorm ### CF_ADMIN_USER
         sslCertificate: |
           -----BEGIN CERTIFICATE-----
           MIIDYTCCAkmgAwIBAgIQOsXsoIEwms95UujmzHLIXjANBgkqhkiG9w0BAQsFADA2
@@ -4019,6 +4019,8 @@ instance_groups:
     release: cf-networking-calico
   - name: bird
     release: cf-networking-calico
+  - name: confd
+    release: cf-networking-calico  
   - name: calico-cni
     release: cf-networking-calico
   name: diego-cell

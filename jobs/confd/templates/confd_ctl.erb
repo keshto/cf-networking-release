@@ -1,0 +1,75 @@
+#!/bin/bash -eu
+
+<%
+  def discover_etcd_server
+    etcd_servers_addr = ""
+    if_link("etcd") do |etcd_servers|
+       etcd_servers.instances.map do |instance|
+         etcd_servers_addr = "http://" + instance.address + ":4001"
+       end
+    end
+    etcd_servers_addr
+  end
+  etcd_server = discover_etcd_server
+%>
+
+
+<% unless p("cf_networking.disable") %>
+source /var/vcap/packages/ctl-utils/ctl_util.sh
+
+RUN_DIR=/var/vcap/sys/run/confd
+LOG_DIR=/var/vcap/sys/log/confd
+
+export PIDFILE="${RUN_DIR}"/confd.pid
+
+mkdir -p "${RUN_DIR}"
+mkdir -p "${LOG_DIR}"
+
+mkdir -p /var/vcap/jobs/confd/conf/
+cp -r /var/vcap/packages/confd/* /var/vcap/jobs/confd/conf/
+
+export PATH="${PATH}:/var/vcap/packages/calico-daemons/bin"
+
+exec 1>> "${LOG_DIR}"/confd_ctl.out.log
+exec 2>> "${LOG_DIR}"/confd_ctl.err.log
+
+ETCD_ENDPOINTS_CONFD=<%= etcd_server%>
+case $1 in
+
+  start)
+    trap 'handle_orphaned_server confd ${pid}' TERM
+
+    killall confd | true
+
+    rm -rf /var/vcap/jobs/confd/var
+    mkdir /var/vcap/jobs/confd/var
+
+    exec confd -confdir=/var/vcap/jobs/confd/conf/ -interval=5 \
+        -watch --log-level=debug \
+       -node $ETCD_ENDPOINTS_CONFD     \
+     2> >(tee -a "${LOG_DIR}"/confd.stderr.log | logger -p user.error -t confd) \
+     1> >(tee -a "${LOG_DIR}"/confd.stdout.log | logger -t confd) &
+
+       #-client-key=${ETCD_KEY_FILE} \
+       #-client-cert=${ETCD_CERT_FILE} -client-ca-keys=${ETCD_CA_CERT_FILE}
+
+
+    pid=`ps aux| grep "confdir=/var/vcap/jobs/confd/conf" | grep -v grep | awk '{print $2}'`
+
+    echo "${pid}" > "${PIDFILE}"
+
+    ;;
+
+  stop)
+
+    stop_process
+
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop}"
+
+    ;;
+
+esac
+<% end %>

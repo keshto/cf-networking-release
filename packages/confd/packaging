@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+set -u
+
+cp -r confd/* ${BOSH_INSTALL_TARGET}/

@@ -1,0 +1,5 @@
+---
+name: confd
+
+files:
+  - confd/**/*

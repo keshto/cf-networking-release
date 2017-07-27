@@ -4,7 +4,9 @@ mkdir tmp
 cd tmp
 tar xzf ../bird/bird-1.6.3-1.tar.gz
 tar xzf ../calico/calico-felix-2.3.0.tar.gz
+tar xzf ../confd/confd-0.11.0.tar.gz
 mkdir ${BOSH_INSTALL_TARGET}/bin
-chmod +x bird bird6 birdcl felix
+chmod +x bird bird6 birdcl felix confd
 cp bird bird6 birdcl ${BOSH_INSTALL_TARGET}/bin
 cp felix ${BOSH_INSTALL_TARGET}/bin
+cp confd ${BOSH_INSTALL_TARGET}/bin
