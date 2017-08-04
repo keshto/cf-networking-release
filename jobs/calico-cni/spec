@@ -46,3 +46,11 @@ properties:
   cf_networking.network:
     description: "CIDR address block for overlay network.  Subnets for each diego cell are allocated out of this network."
     default: "10.255.0.0/16"
+
+  cf_networking.cniImpl:
+    description: "CNI Implementor"
+    default: silk
+
+  cf_networking.cniVersion:
+    description: "Disable container to container networking."
+    default: "0.3.1"

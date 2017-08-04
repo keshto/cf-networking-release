@@ -13,7 +13,7 @@ export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
 go install github.com/containernetworking/plugins/plugins/ipam/host-local
 
 tar xzf calico-cni/calico-cni-1.9.tar.gz
-chmod +x calico calico-ipam portmap
-cp calico calico-ipam portmap ${BOSH_INSTALL_TARGET}/bin
+chmod +x calico calico-ipam portmap calicoctl
+cp calico calico-ipam portmap calicoctl ${BOSH_INSTALL_TARGET}/bin
 
 go install cni-wrapper-plugin

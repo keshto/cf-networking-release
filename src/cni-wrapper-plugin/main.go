@@ -50,29 +50,33 @@ func cmdAdd(args *skel.CmdArgs) error {
 		panic(err) // not tested, this should be impossible
 	}
 
-	app_id   := cniAddData.Metadata["app_id"]
-	org_id   := cniAddData.Metadata["org_id"]
-	space_id := cniAddData.Metadata["space_id"]
-	policy_group_id := cniAddData.Metadata["policy_group_id"]
+	var nestedCfLabels []interface{} = make([]interface{}, len(cniAddData.Metadata))
 	
-	cfAppLabel := map[string]string{"key": "app_id", "value": app_id}
-    cfOrgLabel := map[string]string{"key": "org_id", "value": org_id}
-    cfSpaceLabel := map[string]string{"key": "space_id", "value": space_id}
-    cfPolicyGroupLabel := map[string]string{"key": "policy_group_id", "value": policy_group_id}
-    
-    cfLabels := make(map[string]interface{})
-	cfLabels["labels"] = []interface{} { cfAppLabel, cfOrgLabel, cfSpaceLabel, cfPolicyGroupLabel }
+	i := 0
+	var app_id string
+	for key, value := range cniAddData.Metadata {
+		if (key == "app_id") {
+			app_id, _ = value.(string)
+		} 
+
+		label := map[string]string{"key": key, "value": value.(string)}
+		nestedCfLabels[i] = label
+		i++
+	}
+
+	cfLabels := make(map[string]interface{})
+	cfLabels["labels"] = nestedCfLabels
     
     networkInfo := map[string]interface{} { "name": app_id, "labels" : cfLabels}
 	networkInfoMap := map[string]interface{} { "network_info":networkInfo}
     
     // FIX ME
-    TEMP_PLACE_HOLDER := "org.apache.mesos"
-    argsMetadata := map[string]interface{}{ TEMP_PLACE_HOLDER: networkInfoMap }
-    fmt.Printf("ArgsMetadata is : %+v\n", ArgsMetadata)
+    CF_ARGS_HOLDER := "org.apache.mesos"
+    argsMetadata := map[string]interface{}{ CF_ARGS_HOLDER: networkInfoMap }
+    // fmt.Printf("ArgsMetadata is : %+v\n", argsMetadata)
 
-	jsonString, _ := json.Marshal(argsMetadata)
-	fmt.Println("Passed Args Metadata: %s", string(jsonString))
+	// jsonString, _ := json.Marshal(argsMetadata)
+	// fmt.Printf("Passed Args Metadata: %s", string(jsonString))
 		
 	n.Delegate["args"] = argsMetadata
 	result, err := pluginController.DelegateAdd(n.Delegate)

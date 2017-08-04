@@ -29,7 +29,7 @@ case $1 in
          2> >(tee -a "${LOG_DIR}"/calico-felix.stderr.log | logger -p user.error -t calico-felix) \
          1> >(tee -a "${LOG_DIR}"/calico-felix.stdout.log | logger -t calico-felix) &
 
-    pid=$!
+    pid=`ps aux| grep calico-felix.cfg | grep -v grep | awk '{print $2}'`
 
     echo "${pid}" > "${PIDFILE}"
 
